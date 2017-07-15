@@ -24,7 +24,7 @@ const int hidden = 0; // Set as 0 to broadcast AP's SSID or as 1 to hide SSID
 // ####################################
 
 
-int DelayLength=2000; //Length of time in ms to wait between sending lines from payload
+int DelayLength = 2000; //Length of time in ms to wait between sending lines from payload
 IPAddress local_IP(192,168,1,1); //IP of the esp8266 server
 IPAddress gateway(192,168,1,1);
 IPAddress subnet(255,255,255,0);
@@ -107,14 +107,14 @@ void setup(void){
   });
 
   server.on("/showpayload", [](){
-    webString="";
+    webString = "";
     String payload;
     payload += server.arg(0);
     File f = SPIFFS.open(payload, "r");
     String webString = f.readString();
     f.close();
     server.send(200, "text/html", HTML_CSS_STYLING + HTML_BACK_TO_INDEX + "<a href=\"/dopayload?payload="+payload+"\"><button>Run Payload</button></a><h2><pre>"+payload+"\n-----\n"+webString+"</pre></h2>");
-    webString="";
+    webString = "";
   });
 
   server.on("/dopayload", [](){
