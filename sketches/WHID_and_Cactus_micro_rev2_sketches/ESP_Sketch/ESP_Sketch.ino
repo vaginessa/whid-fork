@@ -35,8 +35,7 @@ String webString;
 const String HTML_CSS_STYLING = "<style>a,body{background-color: #000;color: #0f0;}</style>";
 const String HTML_BACK_TO_INDEX = "<a href=\"/\"><- BACK TO INDEX</a><br><br>";
 
-void handleFileUpload()
-{
+void handleFileUpload(){
   if(server.uri() != "/upload") return;
   HTTPUpload& upload = server.upload();
   if(upload.status == UPLOAD_FILE_START){
@@ -58,7 +57,7 @@ void handleFileUpload()
 void ListPayloads(){
   String FileList = HTML_CSS_STYLING + HTML_BACK_TO_INDEX + "<h><b>Choose Payload:</b></h><br><br>";
   Dir dir = SPIFFS.openDir("/payloads");
-  while (dir.next()) {
+  while (dir.next()){
     String FileName = dir.fileName();
     File f = dir.openFile("r");
     FileList += " ";
@@ -67,18 +66,17 @@ void ListPayloads(){
   server.send(200, "text/html", FileList);
 }
 
-void setup(void)
-{
+void setup(void){
   pinMode(LED_BUILTIN, OUTPUT); 
   Serial.begin(4800);
   SPIFFS.begin();
   
 // Determine if set to Access point mode
-  if (accesspointmode == 1) {
+  if (accesspointmode == 1){
     WiFi.softAPConfig(local_IP, gateway, subnet);
     WiFi.softAP(ssid, password, channel, hidden);
   }
-  else if (accesspointmode != 1) {
+  else if (accesspointmode != 1){
     WiFi.config(local_IP, gateway, subnet);
     WiFi.begin(ssid, password);
   }
@@ -96,7 +94,7 @@ void setup(void)
     SPIFFS.format();
   });
     
-  server.on("/uploadpayload", []() {
+  server.on("/uploadpayload", [](){
     server.send(200, "text/html", HTML_CSS_STYLING + HTML_BACK_TO_INDEX + "<b><h2>Upload Payload:</h2></b><br><br><form method='POST' action='/upload' enctype='multipart/form-data'><input type='file' name='upload'><input type='submit' value='Upload'></form>");
   });
     
@@ -104,7 +102,7 @@ void setup(void)
     
   server.onFileUpload(handleFileUpload);
     
-  server.on("/upload", HTTP_POST, []() {
+  server.on("/upload", HTTP_POST, [](){
     server.send(200, "text/html", HTML_CSS_STYLING + HTML_BACK_TO_INDEX + "<h2>Upload Successful!</h2><br><br><a href=\"/listpayloads\">List Payloads</a>");
   });
 
@@ -124,7 +122,7 @@ void setup(void)
     dopayload += server.arg(0);
     server.send(200, "text/html", HTML_CSS_STYLING + HTML_BACK_TO_INDEX + "<pre><h3>Running payload: "+dopayload+"</h3></pre><br><h3>This may take a while to complete...</h3>");
     File f = SPIFFS.open(dopayload, "r");
-    while(f.available()) {
+    while(f.available()){
       String line = f.readStringUntil('\n');
       Serial.println(line);
       delay(DelayLength); //delay between lines in payload, I found running it slower works best
@@ -135,6 +133,6 @@ void setup(void)
   server.begin();
 }
 
-void loop() {
+void loop(){
   server.handleClient();
 }
